@@ -87,6 +87,40 @@ API PATH : http://localhost:5000/api/
     METHOD: GET
     PATH: '/students'
 
+7.  get student by id
+    METHOD: GET
+    PATH: '/students/student/id'
+    PARAMS: id -> studentID
+    RESPONSE: [
+    //404
+    {
+    success: false
+    error: string
+    }
+    //201
+    {
+    success: true
+    student: object
+    }
+    ]
+
+8.  get students in a class
+    METHOD: GET
+    PATH: '/students/class/id'
+    PARAMS: id -> studentID
+    RESPONSE: [
+    //404
+    {
+    success: false
+    error: string
+    }
+    //201
+    {
+    success: true
+    students: object
+    }
+    ]
+
 # TEACHERS
 
 1.  create teacher
@@ -104,6 +138,52 @@ API PATH : http://localhost:5000/api/
     nextofKinID: String
     profileUrl: String
     }
+     RESPONSE: [
+    //404
+    {
+    success: false
+    error: string
+    }
+    //201
+    {
+    success: true
+    teacher: Object // new value
+    }
+    ]
+
+
+6. get all teachers
+  METHOD: GET
+    PATH: '/teachers'
+    RESPONSE: [
+    //404
+    {
+    success: false
+    error: string
+    }
+    //201
+    {
+    data: Array
+    }
+    ]
+
+7. get teacher by id
+     METHOD: GET
+    PATH: '/teachers/id'
+    PARAMS: id -> teacherID
+    RESPONSE: [
+    //404
+    {
+    success: false
+    error: string
+    }
+    //201
+    {
+    success: true
+    student: object
+    }
+    ]
+# NONTEACHERS
 
 2.  signin
     METHOD: POST
