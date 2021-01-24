@@ -2,7 +2,7 @@ import mongoose  from'mongoose';
 import  dotenv from 'dotenv';
 
 dotenv.config()
-const connection_url = "mongodb+srv://rudo:4gvzcCYefKmyoWZQ@cluster0.moxlj.mongodb.net/dsystem?retryWrites=true&w=majority";
+const connection_url = process.env.DB_CONNECT;
 
 mongoose.connect(connection_url, {
     useCreateIndex: true,
