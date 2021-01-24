@@ -3,7 +3,7 @@ import NonTeacherModel from "../models/NonTeacherModel.js";
 import {create, login} from  '../middlewares/validate.js';
 import  bcrypt from 'bcrypt';
 import {stringtoLowerCaseSpace, stringSpace} from '../middlewares/utils.js';
-
+import {role} from '../middlewares/variables.js'
 const route = express.Router();
 
 
@@ -39,7 +39,7 @@ route.post('/create', async(req , res) => {
       name: stringtoLowerCaseSpace(body?.name),
       surname: stringtoLowerCaseSpace(body?.surname),
       email: stringSpace(body?.email),
-      role: stringtoLowerCaseSpace(body?.role)
+      role: stringtoLowerCaseSpace(role.NonTeacher)
     }
      const {error} = create.validate(body);
     if(error){
@@ -56,7 +56,7 @@ route.post('/create', async(req , res) => {
   
       //calculate teacher
       const currentYear = new Date().getFullYear();
-      const number = await NonTeacherModel.countDocuments({role: "NonTeacher"});
+      const number = await NonTeacherModel.countDocuments({role: role.NonTeacher});
       let staffID = 'TN' + currentYear + (number + 1)
   
       bcrypt.hash(staffID, 10, (err, hash) => {
@@ -67,7 +67,7 @@ route.post('/create', async(req , res) => {
             const userData = {
                 ...req.body,
                 password: hash,
-                _id: staffID
+                NonTeacherID: staffID
             }
             NonTeacherModel.create(userData).then(user => {
             return  res.json({success: true,user})
@@ -88,7 +88,7 @@ route.post('/signin', async(req, res) => {
      return   res.send({ error: error.details[0].message})
     }
     NonTeacherModel.findOne({
-      _id: req.body.userID,
+      NonTeacherID: req.body.nonteacherID,
       role: req.body.role
       }).then((user) => {
        if (user) {
@@ -115,7 +115,7 @@ route.post('/changePassword/:id', async(req, res )=> {
       return  res.json({success: false, error : error.details[0].message})
   }
 
-  NonTeacherModel.findOne({_id:  req.params.id}).then(user => {
+  NonTeacherModel.findOne({NonTeacherID:  req.params.id}).then(user => {
     if(user){
       if (bcrypt.compareSync(req.body.oldPassword, user.password)){
             bcrypt.hash(req.body.newPassword, 10, (err, hash) => {
@@ -124,7 +124,7 @@ route.post('/changePassword/:id', async(req, res )=> {
                 return res.json( { success: false, message: err })
               }
               NonTeacherModel.findOneAndUpdate({
-                _id: req.params.id
+                NonTeacherID: req.params.id
               },{password: hash}, {
                    new: true
               })
@@ -154,7 +154,7 @@ route.put('/update/:id', (req, res) => {
     return res.status(400).send('Missing URL parameter: username')
   } 
 NonTeacherModel.findOneAndUpdate({
-    _id: req.params.id
+    NonTeacherID: req.params.id
   }, req.body, {
     new: true
   })
@@ -177,7 +177,7 @@ route.delete('/delete/:id', (req, res) => {
     return res.status(400).send('Missing URL parameter: username')
   }
 NonTeacherModel.findOneAndRemove({
-    _id: req.params.id
+    NonTeacherID: req.params.id
   })
   .then(doc => {
       res.json(doc)

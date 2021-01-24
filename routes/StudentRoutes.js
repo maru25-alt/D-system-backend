@@ -14,23 +14,44 @@ route.get('/', async(req, res) => {
 })
 
 //get one student by id
-route.get('/:id', async(req, res) => {
+route.get('/student/:id', async(req, res) => {
     if(!req.params.id) {
         return res.status(400).send('Missing URL parameter: username')
       }
     await StudentModel.findOne({ _id: req.params.id })
     .then(user => {
         if(user){
-        return  res.json({success: true,user})
+        return  res.json({success: true,student: user})
         }
         else{
-        return  res.json({success: false, message: 'Student does not exists'})
+        return  res.json({success: false, error: 'Student does not exists'})
         }
     })
     .catch(err => {
-        return res.json({success: false, message: "Server error"})
+        return res.json({success: false, error: "Server error"})
     });
 })
+
+
+//get students in class
+route.get('/class/:id', async(req, res) => {
+  if(!req.params.id) {
+      return res.status(400).send('Missing URL parameter: username')
+    }
+  await StudentModel.find({ classID: req.params.id })
+  .then(user => {
+      if(user){
+      return  res.json({success: true,students: user})
+      }
+      else{
+      return  res.json({success: false, message: 'Student does not exists'})
+      }
+  })
+  .catch(err => {
+      return res.json({success: false, message: "Server error"})
+  });
+})
+
 
 //create student
 route.post('/create', async(req , res) => {
@@ -134,7 +155,7 @@ route.put('/changePassword/:id', async(req, res )=> {
               bcrypt.hash(req.body.newPassword, 10, (err, hash) => {
                 if(err){
                   console.log("err")
-                  return res.json( { success: false, message: err })
+                  return res.json( { success: false, error: err })
                 }
                 StudentModel.findOneAndUpdate({
                   studentID: req.params.id
@@ -142,20 +163,20 @@ route.put('/changePassword/:id', async(req, res )=> {
                      new: true
                 })
                 .then(doc => {
-                     return res.json({success: true, user: doc})
+                     return res.json({success: true, message: "Password successfully changed"})
                   })
                 .catch(e => {
                   console.log("e")
-                    return res.json( { success: false, message: e + "e"})
+                    return res.json( { success: false, error: e + "e"})
                 })
             })  
         }
         else{
-            return res.json( { success: false, message: "Wrong old password"})
+            return res.json( { success: false, error: "Wrong old password"})
         }
       }
       else{
-        return res.json({success: false, message: "Student does not exist"})
+        return res.json({success: false, error: "Student does not exist"})
       }
     })
   })
@@ -178,10 +199,10 @@ route.put('/update/:id', (req, res) => {
         if(!doc){
           return res.json({success: false, error: "doex not exists"})
        }
-        return res.json({success: true, doc});
+        return res.json({success: true, student:  doc});
       })
     .catch(err => {
-        res.json({success: false, message:err})
+        res.json({success: false, error:err})
     })
   
   });
@@ -194,8 +215,11 @@ route.delete('/delele/:id', (req, res) => {
    StudentModel.findOneAndRemove({
       studentID: req.params.id
     })
-    .then(() => {
-        res.json(` ${req.params.id} is successfully DELETED`)
+    .then((doc) => {
+         if(!doc){
+            return
+         }
+        return res.json({success: true, message: ` ${req.params.id} is successfully DELETED`})
       })
       .catch(err => {
         res.status(500).json(err)

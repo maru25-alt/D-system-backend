@@ -9,6 +9,7 @@ export const create = Joi.object({
     telephone: Joi.string(),
     classID: Joi.string(),
     positions: Joi.array(),
+    position: Joi.string(),
     address: Joi.string(),
     courses: Joi.array(),
     classes: Joi.array(),

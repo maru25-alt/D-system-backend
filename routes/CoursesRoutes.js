@@ -6,9 +6,29 @@ import {stringtoLowerCase} from '../middlewares/utils.js';
 const route = express.Router();
 
 route.get('/', async(req, res) => {
-    const ads = await CoursesModel.find();
-    res.json(ads);
+    const doc = await CoursesModel.find();
+    res.json(doc);
 })
+
+//get one by id
+route.get('/:id', async(req, res) => {
+  if(!req.params.id) {
+      return res.status(400).send('Missing URL parameter: username')
+    }
+  await CoursesModel.findOne({ _id: req.params.id })
+  .then(user => {
+      if(user){
+      return  res.json({success: true,student: user})
+      }
+      else{
+      return  res.json({success: false, error: 'Does not exists'})
+      }
+  })
+  .catch(err => {
+      return res.json({success: false, error: "Server error"})
+  });
+})
+
 
 //create
 route.post('/create', async(req, res) => {
@@ -75,10 +95,10 @@ route.delete('/delete/:id', (req, res) => {
       _id: req.params.id
     })
     .then(doc => {
-        res.json(doc)
+        res.json({success: true, doc})
       })
       .catch(err => {
-        res.status(500).json(err)
+        res.status(500).json({success: false, error: err})
       })
   })
 

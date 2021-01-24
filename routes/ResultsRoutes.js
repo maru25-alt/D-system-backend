@@ -10,6 +10,26 @@ route.get('/', async(req, res) => {
     res.json(data);
 })
 
+//get one by id
+route.get('/:id', async(req, res) => {
+  if(!req.params.id) {
+      return res.status(400).send('Missing URL parameter: username')
+    }
+  await Results.findOne({ _id: req.params.id })
+  .then(user => {
+      if(user){
+      return  res.json({success: true,student: user})
+      }
+      else{
+      return  res.json({success: false, error: 'Does not exists'})
+      }
+  })
+  .catch(err => {
+      return res.json({success: false, error: "Server error"})
+  });
+})
+
+
 //create 
 route.post('/create', async(req, res) => {
     let body = req.body

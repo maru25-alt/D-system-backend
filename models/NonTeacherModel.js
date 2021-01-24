@@ -24,10 +24,14 @@ const NonTeacherSchema =   new Schema( {
     },
     role: {
         type: String,
-        default: "NonTeacher"
+        default: "nonteacher"
     },
     telephone: {
         type: String
+    },
+    position: {
+        type: String,
+        required: true
     },
     password: {
         type: String,

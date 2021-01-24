@@ -4,6 +4,7 @@ const { Schema } = mongoose;
 
 const TeacherSchema =   new Schema( {
     _id: String,
+    teacherID: String,
     name: {
         type: String,
         required: true
@@ -47,7 +48,7 @@ const TeacherSchema =   new Schema( {
     classes: {
         type: [{
             classID: String,
-            start__date: {
+            startdate: {
                 type: Date,
                 default: Date.now
             }
@@ -60,7 +61,7 @@ const TeacherSchema =   new Schema( {
         {
             courseID : String,
             classID: String,
-            start__date: {
+            startDate: {
                 type: Date,
                 default: Date.now
             }
@@ -68,7 +69,7 @@ const TeacherSchema =   new Schema( {
       ] ,
       default: []
     },
-    nextofKin_ID: {
+    nextofKinID: {
         type: String
     },
     profileUrl: String,

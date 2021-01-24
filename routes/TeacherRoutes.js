@@ -22,14 +22,14 @@ route.get('/:id', async(req, res) => {
     await TeacherModel.findOne({ _id: req.params.id })
     .then(user => {
         if(user){
-        return  res.json({success: true,user})
+        return  res.json({success: true, teacher: user})
         }
         else{
-        return  res.json({success: false, message: 'Student does not exists'})
+        return  res.json({success: false, error: 'Student does not exists'})
         }
     })
     .catch(err => {
-        return res.json({success: false, message: "Server error"})
+        return res.json({success: false, error: "Server error"})
     });
 })
 
@@ -46,7 +46,7 @@ route.post('/create', async(req , res) => {
       name: stringtoLowerCaseSpace(body?.name),
       surname: stringtoLowerCaseSpace(body?.surname),
       email: stringSpace(body?.email),
-      role: stringtoLowerCaseSpace(body?.role),
+      role: stringtoLowerCaseSpace(role.Teacher),
       gender: stringtoLowerCaseSpace(body?.gender),
       telephone: stringSpace(body?.telephone)
     }
@@ -62,10 +62,10 @@ route.post('/create', async(req , res) => {
       //calculate teacher
       const currentYear = new Date().getFullYear();
       const number = await TeacherModel.countDocuments({role: role.Teacher});
-      let studentId = 'TK' + currentYear + (number + 1)
+      let teacherId = 'TK' + currentYear + (number + 1)
       console.log(number)
   
-      bcrypt.hash(studentId, 10, (err, hash) => {
+      bcrypt.hash(teacherId, 10, (err, hash) => {
             if(err){
                 console.log(err, "err")
               return   res.json({success: false, error: "something went wrong"})
@@ -73,10 +73,10 @@ route.post('/create', async(req , res) => {
             const userData = {
                 ...body,
                 password: hash,
-                _id: studentId
+                teacherID: teacherId
             }
             TeacherModel.create(userData).then(user => {
-            return  res.json({success: true,user})
+            return  res.json({success: true,teacher: user})
            }).catch(e => {
                console.log(e, "e")
              return   res.json({success: false, error: "something went wrong"})
@@ -94,7 +94,7 @@ route.post('/signin', async(req, res) => {
      return   res.send({ error: error.details[0].message})
     }
     TeacherModel.findOne({
-      _id: req.body.userID,
+      teacherID: req.body.teacherID,
       role: stringtoLowerCaseSpace(req.body.role)
       }).then((user) => {
        if (user) {
