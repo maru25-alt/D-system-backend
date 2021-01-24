@@ -36,17 +36,19 @@ route.get('/:id', async(req, res) => {
 route.post('/create', async(req , res) => {
   let body = req.body
 
-  body = {
-    ...body,
-    name: stringtoLowerCaseSpace(body.name),
-    surname: stringtoLowerCaseSpace(body.surname),
-    email: stringSpace(body.email),
-    role: stringtoLowerCaseSpace(body.role)
-  }
    const {error} = create.validate(body);
   if(error){
     return  res.json({success: false, error : error.details[0].message})
    }
+
+   body = {
+    ...body,
+    name: stringtoLowerCaseSpace(body?.name),
+    surname: stringtoLowerCaseSpace(body?.surname),
+    email: stringSpace(body?.email),
+    role: stringtoLowerCaseSpace(body?.role)
+  }
+
    const studentExist = await StudentModel.findOne({ $and : [{
         email: body.email,
         name: body.name,
@@ -59,7 +61,7 @@ route.post('/create', async(req , res) => {
 
     //calculate student num
     const currentYear = new Date().getFullYear();
-    const number = await StudentModel.countDocuments({role: body.role});
+    const number = await StudentModel.countDocuments({role: role.Student});
     let studentId = 'BK' + currentYear + (number + 1)
 
     bcrypt.hash(studentId, 10, (err, hash) => {
@@ -70,7 +72,7 @@ route.post('/create', async(req , res) => {
           const userData = {
               ...body,
               password: hash,
-              _id: studentId
+              studentID: studentId
           }
           StudentModel.create(userData).then(user => {
           return  res.json({success: true,user})
@@ -96,7 +98,7 @@ route.post('/signin', async(req, res) => {
     }
 
     StudentModel.findOne({
-      _id: body.userID,
+      studentID: body.userID,
       role: body.role
       }).then((user) => {
        if (user) {
@@ -137,7 +139,7 @@ route.post('/changePassword/:id', async(req, res )=> {
                   return res.json( { success: false, message: err })
                 }
                 StudentModel.findOneAndUpdate({
-                  _id: req.params.id
+                  studentID: req.params.id
                 },{password: hash}, {
                      new: true
                 })
@@ -169,7 +171,7 @@ route.put('/update/:id', (req, res) => {
     }
     console.log(req.body)
     StudentModel.findOneAndUpdate({
-      _id: req.params.id
+      studentID: req.params.id
     }, req.body, {
       new: true
     })
@@ -192,7 +194,7 @@ route.delete('/delele/:id', (req, res) => {
       return res.status(400).send('Missing URL parameter: username')
     }
    StudentModel.findOneAndRemove({
-      _id: req.params.id
+      studentID: req.params.id
     })
     .then(doc => {
         res.json(doc)

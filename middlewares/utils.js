@@ -1,13 +1,25 @@
 
 export const stringtoLowerCaseSpace = (string) => {
-    return  string.toLowerCase().replace(/\s/g, '')
-}
+    if(string){
+        return  string.toLowerCase().replace(/\s/g, '')
+    }
+    else return 0;
+  
+}  
 
 
 export const stringtoLowerCase = (string) => {
-    return  string.toLowerCase()
+    if(string){
+        return  string.toLowerCase()
+    }
+    else return 0;
+    
 }
 
 export const stringSpace = (string) => {
-    return  string.replace(/\s/g, '')
+    if(string){
+        return  string.replace(/\s/g, '')
+    }
+    else return 0
+   
 }

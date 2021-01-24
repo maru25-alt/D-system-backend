@@ -3,7 +3,10 @@ import  mongoose from "../config/mongodb.js"
 const { Schema } = mongoose;
 
 const StudentSchema =   new Schema( {
-    _id: String,
+    studentID:{
+        type: String,
+        required: true
+    },
     name: {
         type: String,
         required: true
@@ -30,8 +33,7 @@ const StudentSchema =   new Schema( {
         type: String
     },
     classID: {
-        type: String,
-        required: true
+        type: String
     },
     courses: {
         type: [
