@@ -45,8 +45,7 @@ route.post('/create', async(req , res) => {
     ...body,
     name: stringtoLowerCaseSpace(body?.name),
     surname: stringtoLowerCaseSpace(body?.surname),
-    email: stringSpace(body?.email),
-    role: stringtoLowerCaseSpace(body?.role)
+    email: stringSpace(body?.email)
   }
 
    const studentExist = await StudentModel.findOne({ $and : [{
@@ -75,7 +74,7 @@ route.post('/create', async(req , res) => {
               studentID: studentId
           }
           StudentModel.create(userData).then(user => {
-          return  res.json({success: true,user})
+          return  res.json({success: true, student: user})
          }).catch(e => {
              console.log(e, "e")
            return   res.json({success: false, error: "something went wrong"})
@@ -98,12 +97,12 @@ route.post('/signin', async(req, res) => {
     }
 
     StudentModel.findOne({
-      studentID: body.userID,
+      studentID: body.studentID,
       role: body.role
       }).then((user) => {
        if (user) {
           if (bcrypt.compareSync(req.body.password, user.password)) {
-             return  res.json({success: true, user})
+             return  res.json({success: true, student: user})
           } 
           else {
              return res.json({ error: 'Wrong Password or Student ID' })
@@ -124,12 +123,11 @@ route.post('/signin', async(req, res) => {
 
 
 //change password
-route.post('/changePassword/:id', async(req, res )=> {
+route.put('/changePassword/:id', async(req, res )=> {
     const {error} = changePassword.validate(req.body);
     if(error) {
         return  res.json({success: false, error : error.details[0].message})
     }
-  
     StudentModel.findOne({_id:  req.params.id}).then(user => {
       if(user){
         if (bcrypt.compareSync(req.body.oldPassword, user.password)){
@@ -196,8 +194,8 @@ route.delete('/delele/:id', (req, res) => {
    StudentModel.findOneAndRemove({
       studentID: req.params.id
     })
-    .then(doc => {
-        res.json(doc)
+    .then(() => {
+        res.json(` ${req.params.id} is successfully DELETED`)
       })
       .catch(err => {
         res.status(500).json(err)

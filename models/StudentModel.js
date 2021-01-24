@@ -42,11 +42,11 @@ const StudentSchema =   new Schema( {
             }
         ]
     },
-    nextofKin_ID: {
+    nextofKinID: {
         type: String
     },
     profileUrl: String,
-    studentID : String,
+    grade: String,
     date: { 
         type: Date, 
         default: Date.now

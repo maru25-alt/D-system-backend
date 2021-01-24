@@ -5,15 +5,16 @@ export const create = Joi.object({
     surname: Joi.string().min(3).required(),
     email: Joi.string().email(),
     gender: Joi.string(),
-    role: Joi.string().required(),
+    role: Joi.string(),
     telephone: Joi.string(),
     classID: Joi.string(),
     positions: Joi.array(),
     address: Joi.string(),
     courses: Joi.array(),
     classes: Joi.array(),
-    nextofKin_ID: Joi.string(),
+    nextofKinID: Joi.string(),
     profileUrl: Joi.string(),
+    grade: Joi.string(),
 })
 
 export const login = Joi.object({
